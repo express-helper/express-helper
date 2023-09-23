@@ -1,0 +1,25 @@
+{
+  "name": "express-helper",
+  "version": "0.0.1",
+  "description": "express-helper",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/express-helper/express-helper.git"
+  },
+  "keywords": [
+    "express",
+    "express-helper",
+    "helper",
+    "mvc"
+  ],
+  "author": "Dltmd202",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/express-helper/express-helper/issues"
+  },
+  "homepage": "https://github.com/express-helper/express-helper#readme"
+}

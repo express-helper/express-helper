@@ -1,11 +1,9 @@
 {
-  "name": "express-helper",
-  "version": "0.0.1",
+  "name": "expressjs-helper",
+  "version": "0.0.5",
   "description": "express-helper",
-  "main": "index.js",
-  "scripts": {
-    "test": "node index.js"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/express-helper/express-helper.git"

@@ -44,13 +44,13 @@ export function Controller(): ClassDecorator {
       const auth: AuthenticationMetadata = Reflect.getMetadata(authMetadataKey, prototype[method]);
       const statusCode: number = Reflect.getMetadata(statusCodeMetadataKey, prototype[method]) || 200;
 
-      handlerMetaData.methods.forEach((m) => {
+      handlerMetaData.methods.forEach((m: string) => {
         prototype[method] = async (request: Request, response: Response, next: NextFunction) => {
           try {
             const returnView = await handlerMetaData.controller.call(prototype, request, response, next);
             if (typeof returnView === 'string') {
-              response.status(statusCode).sendFile(path.join('views', returnView));
-            }
+              response.status(statusCode).sendFile(path.join(request.app.get('views'), returnView));
+            } else next(new ExpressHelperError(400, 'Invalid View Path Type'));
           } catch (e) {
             next(e);
           }

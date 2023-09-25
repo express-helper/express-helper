@@ -28,7 +28,7 @@ export interface HandlerArgumentMetadata {
   validatePipe: AbstractParsePipe<unknown>;
 }
 
-export interface QueryMetadata extends HandlerArgumentMetadata {
+export interface PathParamMetadata extends HandlerArgumentMetadata {
   value: string;
 }
 

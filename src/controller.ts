@@ -7,7 +7,7 @@ import {
   AuthenticationMetadata,
   BodyMetadata,
   Constructor,
-  QueryMetadata,
+  PathParamMetadata,
   RequestMetadata,
   ClassDecorator,
   MethodDecorator,
@@ -28,7 +28,7 @@ const requestMetadataKey = Symbol('request');
 
 const requestArgumentMetadataKey = Symbol('requestArgument');
 const responseArgumentMetadataKey = Symbol('responseArgument');
-const queryArgumentMetadataKey = Symbol('queryArgument');
+const pathParamArgumentMetadataKey = Symbol('pathParamArgument');
 const bodyArgumentMetadataKey = Symbol('bodyArgument');
 const authenticationMetadataKey = Symbol('authenticationArgument');
 const statusCodeMetadataKey = Symbol('statusCode');
@@ -101,7 +101,11 @@ function argumentsResolvedHandler(
   const responseMetaData = Reflect.getMetadata(responseArgumentMetadataKey, target, propertyKey);
   const bodyMetaData: BodyMetadata = Reflect.getMetadata(bodyArgumentMetadataKey, target, propertyKey);
   const authenticationMetaData = Reflect.getMetadata(authenticationMetadataKey, target, propertyKey);
-  const queryParamMetaDatas: QueryMetadata[] = Reflect.getMetadata(queryArgumentMetadataKey, target, propertyKey);
+  const pathParamArgumentMetadata: PathParamMetadata[] = Reflect.getMetadata(
+    pathParamArgumentMetadataKey,
+    target,
+    propertyKey,
+  );
 
   return async (request: Request, response: Response): Promise<unknown> => {
     if (requestMetaData !== undefined) resolvedArguments[requestMetaData] = request;
@@ -109,12 +113,12 @@ function argumentsResolvedHandler(
     if (bodyMetaData !== undefined)
       resolvedArguments[bodyMetaData.paramIndex] = bodyMetaData.validatePipe.pipe(request.body);
     if (authenticationMetadataKey !== undefined) resolvedArguments[authenticationMetaData] = request.user;
-    if (queryParamMetaDatas !== undefined) {
-      queryParamMetaDatas.forEach((queryParamMetadata: QueryMetadata) => {
-        const param = request.params[queryParamMetadata.value];
+    if (pathParamArgumentMetadata !== undefined) {
+      pathParamArgumentMetadata.forEach((pathParamMetadata: PathParamMetadata) => {
+        const param = request.params[pathParamMetadata.value];
         if (param === undefined) throw new ExpressHelperError(400, 'Bad Request');
 
-        resolvedArguments[queryParamMetadata.paramIndex] = queryParamMetadata.validatePipe.pipe(param);
+        resolvedArguments[pathParamMetadata.paramIndex] = pathParamMetadata.validatePipe.pipe(param);
       });
     }
     return descriptor.value(...resolvedArguments);
@@ -237,14 +241,14 @@ export const Body = (pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): Paramet
 
 export const Param = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
-    const existingQueryParam: QueryMetadata[] =
-      Reflect.getMetadata(queryArgumentMetadataKey, target, propertyKey) || [];
-    existingQueryParam.push({
+    const existingPathParam: PathParamMetadata[] =
+      Reflect.getMetadata(pathParamArgumentMetadataKey, target, propertyKey) || [];
+    existingPathParam.push({
       value: value,
       paramIndex: parameterIndex,
       validatePipe: pipe,
     });
-    Reflect.defineMetadata(queryArgumentMetadataKey, existingQueryParam, target, propertyKey);
+    Reflect.defineMetadata(pathParamArgumentMetadataKey, existingPathParam, target, propertyKey);
   };
 };
 

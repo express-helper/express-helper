@@ -7,7 +7,7 @@ import {
   AuthenticationMetadata,
   BodyMetadata,
   Constructor,
-  PathParamMetadata,
+  ParamMetadata,
   RequestMetadata,
   ClassDecorator,
   MethodDecorator,
@@ -16,6 +16,7 @@ import {
 import { ExpressHelperError } from './error';
 import { HttpMethod, RouterMethods } from './http';
 import { AbstractParsePipe, ParseEmptyPipe } from './validator';
+import * as console from 'console';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -29,6 +30,7 @@ const requestMetadataKey = Symbol('request');
 const requestArgumentMetadataKey = Symbol('requestArgument');
 const responseArgumentMetadataKey = Symbol('responseArgument');
 const pathParamArgumentMetadataKey = Symbol('pathParamArgument');
+const queryParamArgumentMetadataKey = Symbol('queryParamArgument');
 const bodyArgumentMetadataKey = Symbol('bodyArgument');
 const authenticationMetadataKey = Symbol('authenticationArgument');
 const statusCodeMetadataKey = Symbol('statusCode');
@@ -101,8 +103,13 @@ function argumentsResolvedHandler(
   const responseMetaData = Reflect.getMetadata(responseArgumentMetadataKey, target, propertyKey);
   const bodyMetaData: BodyMetadata = Reflect.getMetadata(bodyArgumentMetadataKey, target, propertyKey);
   const authenticationMetaData = Reflect.getMetadata(authenticationMetadataKey, target, propertyKey);
-  const pathParamArgumentMetadata: PathParamMetadata[] = Reflect.getMetadata(
+  const pathParamArgumentMetadata: ParamMetadata[] = Reflect.getMetadata(
     pathParamArgumentMetadataKey,
+    target,
+    propertyKey,
+  );
+  const queryParamArgumentMetadata: ParamMetadata[] = Reflect.getMetadata(
+    queryParamArgumentMetadataKey,
     target,
     propertyKey,
   );
@@ -114,11 +121,18 @@ function argumentsResolvedHandler(
       resolvedArguments[bodyMetaData.paramIndex] = bodyMetaData.validatePipe.pipe(request.body);
     if (authenticationMetadataKey !== undefined) resolvedArguments[authenticationMetaData] = request.user;
     if (pathParamArgumentMetadata !== undefined) {
-      pathParamArgumentMetadata.forEach((pathParamMetadata: PathParamMetadata) => {
+      pathParamArgumentMetadata.forEach((pathParamMetadata: ParamMetadata) => {
         const param = request.params[pathParamMetadata.value];
         if (param === undefined) throw new ExpressHelperError(400, 'Bad Request');
 
         resolvedArguments[pathParamMetadata.paramIndex] = pathParamMetadata.validatePipe.pipe(param);
+      });
+    }
+    if (queryParamArgumentMetadata !== undefined) {
+      queryParamArgumentMetadata.forEach((queryParamMetadata: ParamMetadata) => {
+        const param = request.query[queryParamMetadata.value];
+        if (param === undefined) throw new ExpressHelperError(400, 'Bad Request');
+        resolvedArguments[queryParamMetadata.paramIndex] = queryParamMetadata.validatePipe.pipe(param);
       });
     }
     return descriptor.value(...resolvedArguments);
@@ -241,7 +255,7 @@ export const Body = (pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): Paramet
 
 export const Param = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
-    const existingPathParam: PathParamMetadata[] =
+    const existingPathParam: ParamMetadata[] =
       Reflect.getMetadata(pathParamArgumentMetadataKey, target, propertyKey) || [];
     existingPathParam.push({
       value: value,
@@ -252,6 +266,18 @@ export const Param = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmp
   };
 };
 
+export const Query = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator => {
+  return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
+    const existingQueryParam: ParamMetadata[] =
+      Reflect.getMetadata(queryParamArgumentMetadataKey, target, propertyKey) || [];
+    existingQueryParam.push({
+      value: value,
+      paramIndex: parameterIndex,
+      validatePipe: pipe,
+    });
+    Reflect.defineMetadata(queryParamArgumentMetadataKey, existingQueryParam, target, propertyKey);
+  };
+};
 export const AuthenticatedUser = (): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     Reflect.defineMetadata(authenticationMetadataKey, parameterIndex, target, propertyKey);

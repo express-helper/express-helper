@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import path from 'path';
 import { ExpressHelperError } from './error';
 import { controller, seekController } from './controller';
+import * as console from "console";
 
 export const expressHelperEndpoint = () => {
   return (err: unknown, req: Request, res: Response, next: NextFunction) => {
@@ -16,6 +17,7 @@ export const expressHelperEndpoint = () => {
 };
 
 export const expressHelper = () => {
-  seekController(path.join('src', 'controller'));
+  const appFilePath = process.argv[1];
+  seekController(path.join(path.dirname(appFilePath), 'controller'));
   return controller;
 };

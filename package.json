@@ -4,6 +4,9 @@
   "description": "express-helper",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/express-helper/express-helper.git"
@@ -25,15 +28,18 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "@types/jest": "^29.5.5",
     "@types/express": "^4.17.18",
     "@types/node": "^20.5.7",
-    "typescript": "^5.2.2",
-    "eslint": "^8.49.0",
-    "prettier": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
+    "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-prettier": "^5.0.0"
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
   }
 }

@@ -6,6 +6,10 @@ export enum HttpMethod {
   PATCH = 'PATCH',
   POST = 'POST',
   DELETE = 'DELETE',
+  HEAD = 'HEAD',
+  CONNECT = 'CONNECT',
+  OPTIONS = 'OPTIONS',
+  TRACE = 'TRACE',
 }
 
 export type RouterMethods = 'get' | 'post' | 'put' | 'delete' | 'patch';
@@ -19,14 +23,22 @@ export namespace HttpMethod {
     switch (method.replace(/\t/g, '').toUpperCase()) {
       case 'GET':
         return HttpMethod.GET;
-      case 'PUT':
-        return HttpMethod.PUT;
-      case 'PATCH':
-        return HttpMethod.PATCH;
       case 'POST':
         return HttpMethod.POST;
       case 'DELETE':
         return HttpMethod.DELETE;
+      case 'PUT':
+        return HttpMethod.PUT;
+      case 'PATCH':
+        return HttpMethod.PATCH;
+      case 'HEAD':
+        return HttpMethod.HEAD;
+      case 'CONNECT':
+        return HttpMethod.CONNECT;
+      case 'OPTIONS':
+        return HttpMethod.OPTIONS;
+      case 'TRACE':
+        return HttpMethod.TRACE;
       default:
         throw new ExpressHelperError(405, 'Unsupported Http Method');
     }

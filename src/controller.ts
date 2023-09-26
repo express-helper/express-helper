@@ -16,7 +16,6 @@ import {
 import { ExpressHelperError } from './error';
 import { HttpMethod, RouterMethods } from './http';
 import { AbstractParsePipe, ParseEmptyPipe } from './validator';
-import * as console from 'console';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -237,6 +236,91 @@ export function Put(url: string): MethodDecorator {
       {
         url,
         methods: [HttpMethod.PUT],
+        name: propertyKey,
+        controller: handler,
+      },
+      descriptor.value,
+    );
+  };
+}
+
+export function Patch(url: string): MethodDecorator {
+  return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
+    const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
+
+    Reflect.defineMetadata(
+      requestMetadataKey,
+      {
+        url,
+        methods: [HttpMethod.PATCH],
+        name: propertyKey,
+        controller: handler,
+      },
+      descriptor.value,
+    );
+  };
+}
+
+export function Head(url: string): MethodDecorator {
+  return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
+    const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
+
+    Reflect.defineMetadata(
+      requestMetadataKey,
+      {
+        url,
+        methods: [HttpMethod.HEAD],
+        name: propertyKey,
+        controller: handler,
+      },
+      descriptor.value,
+    );
+  };
+}
+
+export function CONNECT(url: string): MethodDecorator {
+  return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
+    const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
+
+    Reflect.defineMetadata(
+      requestMetadataKey,
+      {
+        url,
+        methods: [HttpMethod.CONNECT],
+        name: propertyKey,
+        controller: handler,
+      },
+      descriptor.value,
+    );
+  };
+}
+
+export function Options(url: string): MethodDecorator {
+  return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
+    const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
+
+    Reflect.defineMetadata(
+      requestMetadataKey,
+      {
+        url,
+        methods: [HttpMethod.OPTIONS],
+        name: propertyKey,
+        controller: handler,
+      },
+      descriptor.value,
+    );
+  };
+}
+
+export function Trace(url: string): MethodDecorator {
+  return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
+    const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
+
+    Reflect.defineMetadata(
+      requestMetadataKey,
+      {
+        url,
+        methods: [HttpMethod.TRACE],
         name: propertyKey,
         controller: handler,
       },

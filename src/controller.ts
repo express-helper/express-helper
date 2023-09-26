@@ -33,6 +33,8 @@ const pathParamArgumentMetadataKey = Symbol('pathParamArgument');
 const queryParamArgumentMetadataKey = Symbol('queryParamArgument');
 const bodyArgumentMetadataKey = Symbol('bodyArgument');
 const authenticationMetadataKey = Symbol('authenticationArgument');
+const cookieArgumentMetadataKey = Symbol('cookieArgument');
+
 const statusCodeMetadataKey = Symbol('statusCode');
 const authMetadataKey = Symbol('auth');
 
@@ -103,6 +105,7 @@ function argumentsResolvedHandler(
   const responseMetaData = Reflect.getMetadata(responseArgumentMetadataKey, target, propertyKey);
   const bodyMetaData: BodyMetadata = Reflect.getMetadata(bodyArgumentMetadataKey, target, propertyKey);
   const authenticationMetaData = Reflect.getMetadata(authenticationMetadataKey, target, propertyKey);
+  const cookieMetaData = Reflect.getMetadata(cookieArgumentMetadataKey, target, propertyKey);
   const pathParamArgumentMetadata: ParamMetadata[] = Reflect.getMetadata(
     pathParamArgumentMetadataKey,
     target,
@@ -134,6 +137,24 @@ function argumentsResolvedHandler(
         if (param === undefined) throw new ExpressHelperError(400, 'Bad Request');
         resolvedArguments[queryParamMetadata.paramIndex] = queryParamMetadata.validatePipe.pipe(param);
       });
+    }
+    if (cookieMetaData !== undefined) {
+      if (request.cookies !== undefined) {
+        resolvedArguments[bodyMetaData.paramIndex] = cookieMetaData.validatePipe.pipe(
+          request.cookies[cookieMetaData.value],
+        );
+      } else if (request.headers.cookie) {
+        const rawCookies = request.headers.cookie.split('; ');
+        rawCookies.forEach((c) => {
+          const [key, val] = c.split('=');
+          if (key === cookieMetaData.value)
+            resolvedArguments[bodyMetaData.paramIndex] = cookieMetaData.validatePipe.pipe(val);
+        });
+        if (resolvedArguments[bodyMetaData.paramIndex] === undefined) {
+          throw new ExpressHelperError(400, 'Bad Request');
+        }
+      }
+      request.cookies;
     }
     return descriptor.value(...resolvedArguments);
   };
@@ -287,6 +308,16 @@ export const AuthenticatedUser = (): ParameterDecorator => {
 export function UseGuard(authMiddleware: Handler): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     Reflect.defineMetadata(authMetadataKey, { authMiddleware: authMiddleware }, descriptor.value);
+  };
+}
+
+export function Cookie(value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator {
+  return (target: any, propertyKey: string | symbol, parameterIndex: number) => {
+    Reflect.defineMetadata(
+      cookieArgumentMetadataKey,
+      { value: value, paramIndex: parameterIndex, validatePipe: pipe },
+      propertyKey,
+    );
   };
 }
 

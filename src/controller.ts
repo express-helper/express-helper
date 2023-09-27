@@ -377,6 +377,31 @@ export function Put(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Patch` is a MethodDecorator that is utilized to mark a method in a controller class as an Express request
+ * handler for HTTP PATCH requests. When a method is decorated with `Patch`, it indicates that this method
+ * should handle incoming PATCH requests on the specified URL path.
+ *
+ * This decorator also stores relevant metadata for the method, including the URL path, HTTP method (PATCH),
+ * method name, and the resolved request handler.
+ *
+ * By using `Patch`, developers can organize their routes in a clean, declarative way, abstracting away
+ * the boilerplate code typically associated with registering routes in Express.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Patch('/update-user/:id')
+ *   updateUser(@Param('id') id: string, @Body() userData: UpdateUserDto) {
+ *     // Implementation of the PATCH request handler.
+ *     // This method will handle PATCH requests to "/update-user/:id".
+ *   }
+ * }
+ *
+ * @param url - The URL path to register the decorated method as a request handler for.
+ * @returns {MethodDecorator} - A MethodDecorator designed to indicate that the decorated method should handle
+ * incoming PATCH requests on the specified URL path.
+ */
 export function Patch(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -394,6 +419,31 @@ export function Patch(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Head` is a MethodDecorator that is used to mark a method in a controller class as an Express request
+ * handler for HTTP HEAD requests. When a method is adorned with `Head`, it denotes that this method
+ * should process incoming HEAD requests on the provided URL path.
+ *
+ * This decorator further stores pertinent metadata for the method, including the URL path, HTTP method (HEAD),
+ * method name, and the associated request handler.
+ *
+ * By employing `Head`, developers can manage their routes in a clear, declarative manner, eliminating
+ * the repetitive code typically needed for setting up routes in Express.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Head('/resource-info/:id')
+ *   resourceInfo(@Param('id') id: string) {
+ *     // Implementation of the HEAD request handler.
+ *     // This method will cater to HEAD requests to "/resource-info/:id".
+ *   }
+ * }
+ *
+ * @param url - The URL path for which the decorated method should serve as a request handler.
+ * @returns {MethodDecorator} - A MethodDecorator crafted to specify that the embellished method should
+ * accommodate incoming HEAD requests on the designated URL path.
+ */
 export function Head(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -411,6 +461,31 @@ export function Head(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `CONNECT` is a MethodDecorator used to mark a method within a controller class as an Express request
+ * handler for HTTP CONNECT requests. When applied, it signifies that the associated method
+ * should handle incoming CONNECT requests on the specified URL path.
+ *
+ * This decorator further accumulates essential metadata regarding the method, such as the URL path,
+ * HTTP method (CONNECT), method name, and the connected request handler.
+ *
+ * With the `CONNECT` decorator, developers can define their routes in an expressive and declarative manner,
+ * eliminating the boilerplate usually required when establishing routes in Express.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@CONNECT('/connect-endpoint')
+ *   handleConnect() {
+ *     // Implementation of the CONNECT request handler.
+ *     // This method will respond to CONNECT requests to "/connect-endpoint".
+ *   }
+ * }
+ *
+ * @param url - The URL path for which the decorated method will serve as the request handler.
+ * @returns {MethodDecorator} - A MethodDecorator tailored to denote that the adorned method should
+ * handle incoming CONNECT requests for the provided URL path.
+ */
 export function CONNECT(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -427,6 +502,32 @@ export function CONNECT(url: string): MethodDecorator {
     );
   };
 }
+
+/**
+ * `Options` is a MethodDecorator used to mark a method within a controller class as an Express request
+ * handler for HTTP OPTIONS requests. When applied, it indicates that the associated method
+ * should handle incoming OPTIONS requests on the specified URL path.
+ *
+ * This decorator gathers important metadata related to the method, such as the URL path,
+ * HTTP method (OPTIONS), method name, and the associated request handler.
+ *
+ * By using the `Options` decorator, developers can articulate their routes in a clean and
+ * declarative way, simplifying the usual process of setting up routes in Express.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Options('/options-endpoint')
+ *   handleOptions() {
+ *     // Implementation of the OPTIONS request handler.
+ *     // This method will respond to OPTIONS requests to "/options-endpoint".
+ *   }
+ * }
+ *
+ * @param url - The URL path at which the decorated method will act as the request handler.
+ * @returns {MethodDecorator} - A MethodDecorator specifically crafted to designate that the decorated
+ * method should attend to incoming OPTIONS requests for the stipulated URL path.
+ */
 
 export function Options(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
@@ -445,6 +546,31 @@ export function Options(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Trace` is a MethodDecorator used to mark a method within a controller class as an Express request
+ * handler for HTTP TRACE requests. When applied, it indicates that the associated method
+ * should handle incoming TRACE requests on the specified URL path.
+ *
+ * This decorator gathers important metadata related to the method, such as the URL path,
+ * HTTP method (TRACE), method name, and the associated request handler.
+ *
+ * By using the `Trace` decorator, developers can articulate their routes in a clean and
+ * declarative way, simplifying the usual process of setting up routes in Express.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Trace('/trace-endpoint')
+ *   handleTrace() {
+ *     // Implementation of the TRACE request handler.
+ *     // This method will respond to TRACE requests to "/trace-endpoint".
+ *   }
+ * }
+ *
+ * @param url - The URL path at which the decorated method will act as the request handler.
+ * @returns {MethodDecorator} - A MethodDecorator specifically crafted to designate that the decorated
+ * method should attend to incoming TRACE requests for the stipulated URL path.
+ */
 export function Trace(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -726,6 +852,33 @@ export function UseGuard(authMiddleware: Handler): MethodDecorator {
   };
 }
 
+/**
+ * `Cookie` is a ParameterDecorator function that is used to extract a specific cookie value from
+ * an Express request. The decorator also provides the capability to apply validation and transformation
+ * logic to the extracted cookie value using a provided pipe, allowing for enhanced type safety and
+ * data sanitization.
+ *
+ * When applied to a parameter within a request handler method, the `Cookie` decorator stores metadata
+ * to indicate that the decorated parameter should receive the value of a specified cookie. If a validation
+ * and transformation pipe is provided, the cookie value will be processed through the pipe before being
+ * assigned to the parameter.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Get('/get-user')
+ *   getUserInfo(@Cookie('sessionToken', ParseDefaultPipe) token: string) {
+ *     // The `token` parameter will contain the value of the "sessionToken" cookie.
+ *     // If `ParseDefaultPipe` is used, it means the cookie value will be passed as is without any modification.
+ *     // Implementation of request handler.
+ *   }
+ * }
+ *
+ * @param value - The name of the cookie to extract from the Express request.
+ * @param pipe - An optional validation and transformation pipe. By default, `ParseEmptyPipe` is used.
+ * @returns {ParameterDecorator} - A ParameterDecorator designed to specify that the decorated
+ * parameter should receive the value of a specified cookie, potentially after processing through the provided pipe.
+ */
 export function Cookie(value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator {
   return (target: any, propertyKey: string | symbol, parameterIndex: number) => {
     Reflect.defineMetadata(

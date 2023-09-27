@@ -36,6 +36,18 @@ const authenticationMetadataKey = Symbol('authenticationArgument');
 const statusCodeMetadataKey = Symbol('statusCode');
 const authMetadataKey = Symbol('auth');
 
+/**
+ * `Controller` is a class decorator builder aimed at handling HTTP text/html requests
+ * It iterates over methods of a class prototype,
+ * retrieves metadata associated with request handling, authentication, and status codes.
+ * Then, it modifies each method to either send a file as a response or throw an error.
+ *
+ * @example
+ * \@Controller()
+ * class MyController { }
+ *
+ * @returns {ClassDecorator} - it's return class decorator
+ */
 export function Controller(): ClassDecorator {
   return (constructor: Constructor): void => {
     const { prototype } = constructor;
@@ -65,6 +77,18 @@ export function Controller(): ClassDecorator {
   };
 }
 
+/**
+ * `RestController` is a class decorator builder aimed at handling HTTP application/json requests
+ * It iterates over methods of a class prototype,
+ * retrieves metadata associated with request handling, authentication, and status codes.
+ * Then, it modifies each method to either send a file as a response or throw an error.
+ *
+ * @example
+ * \@RestController()
+ * class MyController { }
+ *
+ * @returns {ClassDecorator} - it's return class decorator
+ */
 export const RestController = (): ClassDecorator => {
   return (constructor: Constructor): void => {
     const { prototype } = constructor;
@@ -93,6 +117,21 @@ export const RestController = (): ClassDecorator => {
   };
 };
 
+/**
+ * `argumentsResolvedHandler` is a function that extracts
+ * the necessary factors from the handler function of express,
+ * injects the instance into the controller function that the user wants,
+ * and then returns a proxy handler that invokes the user to the resolved objects.
+ *
+ * @function
+ * @param target - The prototype of the class the method belongs to.
+ * @param propertyKey - The name of the method.
+ * @param descriptor - The descriptor of the method.
+ * @returns {ArgumentResolvedHandler<Request, Response>} - Returns an async function that takes a
+ * request and response, resolves and validates the necessary parameters, and invokes the original
+ * method with these parameters.
+ *
+ */
 function argumentsResolvedHandler(
   target: any,
   propertyKey: string | symbol,
@@ -139,6 +178,16 @@ function argumentsResolvedHandler(
   };
 }
 
+/**
+ * `RequestMapping` is a MethodDecorator builder that wraps around all HTTP method request handler method
+ * within a class. It sets up the URL route, binds all HTTP methods, and associates the
+ * `argumentsResolvedHandler` function with the method.
+ *
+ * @param url - The URL route to be associated with the decorated method.
+ * @returns {MethodDecorator} - A MethodDecorator that should be used to decorate an HTTP request handler
+ * @deprecated - no longer support methods that support all methods.
+ * @see {Get, Post, Put, Delete}
+ */
 export function RequestMapping(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -156,6 +205,27 @@ export function RequestMapping(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Get` is a MethodDecorator function designed for HTTP GET request handler methods
+ * within a class. It associates the specified URL route, binds the GET HTTP method, and
+ * connects the `argumentsResolvedHandler` function with the method.
+ *
+ * The decorator will add metadata to the method, specifying the URL route, binding the GET method,
+ * defining the name of the method, and associating the `argumentsResolvedHandler` for handling the request.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Get(`/my-route`)
+ *   async myMethod() {
+ *     // Implementation of the GET request handler
+ *   }
+ * }
+ *
+ * @param url - The URL route to be associated with the decorated method.
+ * @returns {MethodDecorator} - A MethodDecorator designed for decorating HTTP GET request handler
+ * methods within a class.
+ */
 export function Get(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -173,6 +243,27 @@ export function Get(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Post` is a MethodDecorator function designed for HTTP POST request handler methods
+ * within a class. It associates the specified URL route, binds the POST HTTP method, and
+ * connects the `argumentsResolvedHandler` function with the method.
+ *
+ * The decorator will add metadata to the method, specifying the URL route, binding the POST method,
+ * defining the name of the method, and associating the `argumentsResolvedHandler` for handling the request.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Post('/my-route')
+ *   async myMethod() {
+ *     // Implementation of the POST request handler
+ *   }
+ * }
+ *
+ * @param url - The URL route to be associated with the decorated method.
+ * @returns {MethodDecorator} - A MethodDecorator designed for decorating HTTP POST request handler
+ * methods within a class.
+ */
 export function Post(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -190,6 +281,27 @@ export function Post(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Delete` is a MethodDecorator function designed for HTTP DELETE request handler methods
+ * within a class. It associates the specified URL route, binds the DELETE HTTP method, and
+ * connects the `argumentsResolvedHandler` function with the method.
+ *
+ * The decorator will add metadata to the method, specifying the URL route, binding the DELETE method,
+ * defining the name of the method, and associating the `argumentsResolvedHandler` for handling the request.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Delete('/my-route')
+ *   async myMethod() {
+ *     // Implementation of the DELETE request handler
+ *   }
+ * }
+ *
+ * @param url - The URL route to be associated with the decorated method.
+ * @returns {MethodDecorator} - A MethodDecorator designed for decorating HTTP DELETE request handler
+ * methods within a class.
+ */
 export function Delete(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -207,6 +319,27 @@ export function Delete(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `Put` is a MethodDecorator function designed for HTTP PUT request handler methods
+ * within a class. It associates the specified URL route, binds the PUT HTTP method, and
+ * connects the `argumentsResolvedHandler` function with the method.
+ *
+ * The decorator will add metadata to the method, specifying the URL route, binding the PUT method,
+ * defining the name of the method, and associating the `argumentsResolvedHandler` for handling the request.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Put('/my-route')
+ *   async myMethod(req: Request, res: Response) {
+ *     // Implementation of the PUT request handler
+ *   }
+ * }
+ *
+ * @param url - The URL route to be associated with the decorated method.
+ * @returns {MethodDecorator} - A MethodDecorator designed for decorating HTTP PUT request handler
+ * methods within a class.
+ */
 export function Put(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
@@ -224,24 +357,120 @@ export function Put(url: string): MethodDecorator {
   };
 }
 
+/**
+ * `HttpCode` is a MethodDecorator function that allows you to specify an HTTP status code
+ * for the response of a request handler method within a class. When the method is invoked,
+ * the provided HTTP code will be set as the response status.
+ *
+ * The decorator stores the specified status code as metadata on the method. This can be used
+ * in conjunction with other decorators like `@Get`, `@Post`, `@Put`, etc., to customize the
+ * response code for those HTTP methods.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@HttpCode(201)
+ *   \@Post('/my-route')
+ *   async myMethod() {
+ *     // Implementation of the request handler
+ *   }
+ * }
+ *
+ * @param code - The HTTP status code to be set when the decorated method is invoked.
+ * @returns {MethodDecorator} - A MethodDecorator used to specify the response status code for a
+ * request handler method.
+ */
 export const HttpCode = (code: number): MethodDecorator => {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     Reflect.defineMetadata(statusCodeMetadataKey, code, descriptor.value);
   };
 };
 
+/**
+ * `Req` is a ParameterDecorator function designed for use within request handler methods of a class.
+ * It marks the parameter as the one that should receive the Express `Request` instance.
+ *
+ * When the handler method is invoked, the `Request` object from Express will be automatically
+ * injected into the decorated parameter, allowing the developer to access all properties and
+ * methods of the `Request` object.
+ *
+ * The decorator stores metadata on the method's parameter indicating it as the designated receiver
+ * of the `Request` instance.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Get('/my-route')
+ *   async myMethod(@Req() req: Request) {
+ *     // Implementation of request handler
+ *   }
+ * }
+ *
+ * @returns {ParameterDecorator} - A ParameterDecorator used to specify that the decorated parameter
+ * should receive the Express `Request` instance.
+ */
 export const Req = (): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     Reflect.defineMetadata(requestArgumentMetadataKey, parameterIndex, target, propertyKey);
   };
 };
 
+/**
+ * `Res` is a ParameterDecorator function designed for use within request handler methods of a class.
+ * It marks the parameter as the one that should receive the Express `Response` instance.
+ *
+ * When the handler method is invoked, the `Response` object from Express will be automatically
+ * injected into the decorated parameter, allowing the developer to access all properties and
+ * methods of the `Response` object, and consequently send a response to the client.
+ *
+ * The decorator stores metadata on the method's parameter indicating it as the designated receiver
+ * of the `Response` instance.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Get('/my-route')
+ *   async myMethod(@Res() res: Response) {
+ *     res.send('Hello, World!');
+ *     // Implementation of the GET request handler
+ *   }
+ * }
+ *
+ * @returns {ParameterDecorator} - A ParameterDecorator used to specify that the decorated parameter
+ * should receive the Express `Response` instance.
+ *
+ */
 export const Res = (): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     Reflect.defineMetadata(responseArgumentMetadataKey, parameterIndex, target, propertyKey);
   };
 };
 
+/**
+ * `Body` is a ParameterDecorator function that marks a parameter within a request handler method
+ * to receive the parsed body object from an Express request. Optionally, it allows the developer
+ * to specify a validation and transformation pipe to process the body data before it's assigned to
+ * the decorated parameter.
+ *
+ * This decorator stores metadata on the method's parameter indicating it as the designated receiver
+ * of the parsed request body and any associated pipe for validation and transformation.
+ *
+ * The provided pipe is responsible for both validation and transformation of the incoming body data.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Post('/create')
+ *   async createItem(@Body(ParseIntPipe) body: number) {
+ *     // Implementation of request handler.
+ *   }
+ * }
+ *
+ * @param pipe - An optional validation and transformation pipe. By default, `ParseEmptyPipe` is used.
+ * @returns {ParameterDecorator} - A ParameterDecorator designed to specify that the decorated
+ * parameter should receive the parsed body from an Express request, potentially after processing
+ * through the provided pipe.
+ */
 export const Body = (pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     Reflect.defineMetadata(
@@ -253,6 +482,32 @@ export const Body = (pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): Paramet
   };
 };
 
+/**
+ * `Param` is a ParameterDecorator function that marks a parameter within a request handler method
+ * to receive the specified path parameter from an Express route. Optionally, it allows the developer
+ * to provide a validation and transformation pipe to process the path parameter before it's passed to
+ * the decorated parameter.
+ *
+ * The decorator aggregates any existing path parameters, then adds the new path parameter
+ * and any associated pipe for validation and transformation.
+ *
+ * The provided pipe is responsible for both validation and transformation of the incoming path parameter.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Get('/:id')
+ *   async getItem(@Param('id', ParseIntPipe) id: number) {
+ *     // Now, `id` is guaranteed to be a number due to the ParseIntPipe transformation.
+ *     // Implementation of request handler.
+ *   }
+ * }
+ *
+ * @param value - The name of the path parameter to extract from the route.
+ * @param pipe - An optional validation and transformation pipe. By default, `ParseEmptyPipe` is used.
+ * @returns {ParameterDecorator} - A ParameterDecorator designed to extract and potentially process
+ * a path parameter from an Express route before passing it to the decorated parameter.
+ */
 export const Param = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     const existingPathParam: ParamMetadata[] =
@@ -266,6 +521,32 @@ export const Param = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmp
   };
 };
 
+/**
+ * `Query` is a ParameterDecorator function that designates a parameter within a request handler method
+ * to extract the specified query parameter from an Express request URL. Additionally, developers can
+ * optionally specify a validation and transformation pipe to process the query parameter before passing
+ * it to the decorated parameter.
+ *
+ * The decorator aggregates any existing query parameters, then appends the new query parameter
+ * and any associated pipe for validation and transformation.
+ *
+ * The provided pipe is responsible for both the validation and transformation of the received query parameter.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@Get('/items')
+ *   async getItems(@Query('limit', ParseIntPipe) limit: number) {
+ *     // Now, `limit` is guaranteed to be a number due to the ParseIntPipe transformation.
+ *     // Implementation of the GET request handler.
+ *   }
+ * }
+ *
+ * @param value - The name of the query parameter to extract from the request URL.
+ * @param pipe - An optional validation and transformation pipe. By default, `ParseEmptyPipe` is used.
+ * @returns {ParameterDecorator} - A ParameterDecorator constructed to fetch and optionally process
+ * a query parameter from an Express request URL before providing it to the decorated parameter.
+ */
 export const Query = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmptyPipe): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     const existingQueryParam: ParamMetadata[] =
@@ -278,12 +559,62 @@ export const Query = (value: string, pipe: AbstractParsePipe<unknown> = ParseEmp
     Reflect.defineMetadata(queryParamArgumentMetadataKey, existingQueryParam, target, propertyKey);
   };
 };
+
+/**
+ * `AuthenticatedUser` is a ParameterDecorator that facilitates the easy extraction of
+ * the authenticated user information stored within `request.user` by the `UseGuard` middleware.
+ *
+ * When the `AuthenticatedUser` decorator is applied to a parameter in a request handler method,
+ * the method is signaled to receive the authenticated user data from the `request.user` property.
+ * This allows for concise and clear access to the authenticated user's details.
+ *
+ * This decorator is especially useful in conjunction with the `UseGuard` decorator, which handles
+ * the actual authentication process and stores the authentication result in `request.user`.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@UseGuard(myAuthMiddleware)
+ *   \@Get('/user-details')
+ *   async userDetails(@AuthenticatedUser() user: User) {
+ *     // `user` now contains the authenticated user's information.
+ *     // Implementation for returning the authenticated user's details.
+ *   }
+ * }
+ *
+ * @returns {ParameterDecorator} - A ParameterDecorator designed to extract the authenticated
+ * user's details from `request.user` and provide it to the decorated parameter.
+ */
 export const AuthenticatedUser = (): ParameterDecorator => {
   return (target: any, propertyKey: string | symbol, parameterIndex: number): void => {
     Reflect.defineMetadata(authenticationMetadataKey, parameterIndex, target, propertyKey);
   };
 };
 
+/**
+ * `UseGuard` is a MethodDecorator function that allows for the attachment of an authentication middleware
+ * to a specific request handler method. The provided authentication middleware performs necessary
+ * authentication processes and, if successful, stores the authentication information within `request.user`.
+ *
+ * Once the middleware completes the authentication checks and updates `request.user`,
+ * the request is forwarded to the method it decorates. If the authentication process fails,
+ * it's the middleware's responsibility to handle the error appropriately.
+ *
+ * @example
+ * \@RestController
+ * class MyController {
+ *   \@UseGuard(myAuthMiddleware)
+ *   \@Get('/secure-endpoint')
+ *   async secureEndpoint(@Req() req: Request) {
+ *     // Use `req.user` for authenticated user information.
+ *     // Implementation of the GET request handler for authenticated users.
+ *   }
+ * }
+ *
+ * @param authMiddleware - The authentication middleware to be invoked before the decorated method.
+ * @returns {MethodDecorator} - A MethodDecorator constructed to apply the provided authentication
+ * middleware before executing the decorated method.
+ */
 export function UseGuard(authMiddleware: Handler): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     Reflect.defineMetadata(authMetadataKey, { authMiddleware: authMiddleware }, descriptor.value);

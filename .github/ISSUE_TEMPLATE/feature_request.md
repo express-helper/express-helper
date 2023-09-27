@@ -1,12 +1,12 @@
 ---
 name: Feature request
-about: feature issue를 위한 템플릿
+about: Suggest an idea for this project
 title: "[Feature]"
 labels: enhancement
-assignees: lsh23
+assignees: lsh23, Dltmd202
 
 ---
 
-## 기능 상세
-- [ ] 기능 1에 대한 설명
-- [ ] 기능 2에 대한 설명
+## Feature Details
+- [ ] Description of Feature 1
+- [ ] Description of Feature 2

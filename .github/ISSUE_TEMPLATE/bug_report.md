@@ -1,20 +1,23 @@
 ---
 name: Bug report
-about: 버그 리포트를 위한 템플릿
+about: Create a report to help us improve
 title: "[BUG]"
 labels: bug
-assignees: lsh23
+assignees: lsh23, Dltmd202
 
 ---
 
-## 버그 기능
-- 페이지나 기능 작성
+## Describe the bug 
+A clear and concise description of what the bug is.
 
-### 버그 상황 재연
-- 어떤 상황에서 버그가 발생하는지 작성
+### To Reproduce
+Steps to reproduce the behavior
 
-### 기대 동작
-- 원래 기대하던 정상 동작에 대해 작성
+### Expected behavior
+A clear and concise description of what you expected to happen.
 
-### 현재 동작
-- 기대 동작 대비 지금 문제가 되는 동작을 작성
+### Current Behavior
+Description of the behavior that is currently causing issues compared to the expected behavior.
+
+### Additional context
+Add any other context about the problem here.

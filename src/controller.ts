@@ -178,7 +178,7 @@ function argumentsResolvedHandler(
     }
     if (cookieMetaData !== undefined) {
       if (request.cookies !== undefined) {
-        resolvedArguments[bodyMetaData.paramIndex] = cookieMetaData.validatePipe.pipe(
+        resolvedArguments[cookieMetaData.paramIndex] = cookieMetaData.validatePipe.pipe(
           request.cookies[cookieMetaData.value],
         );
       } else if (request.headers.cookie) {
@@ -186,9 +186,9 @@ function argumentsResolvedHandler(
         rawCookies.forEach((c) => {
           const [key, val] = c.split('=');
           if (key === cookieMetaData.value)
-            resolvedArguments[bodyMetaData.paramIndex] = cookieMetaData.validatePipe.pipe(val);
+            resolvedArguments[cookieMetaData.paramIndex] = cookieMetaData.validatePipe.pipe(val);
         });
-        if (resolvedArguments[bodyMetaData.paramIndex] === undefined) {
+        if (resolvedArguments[cookieMetaData.paramIndex] === undefined) {
           throw new ExpressHelperError(400, 'Bad Request');
         }
       }
@@ -884,6 +884,7 @@ export function Cookie(value: string, pipe: AbstractParsePipe<unknown> = ParseEm
     Reflect.defineMetadata(
       cookieArgumentMetadataKey,
       { value: value, paramIndex: parameterIndex, validatePipe: pipe },
+      target,
       propertyKey,
     );
   };

@@ -24,16 +24,10 @@ export class TestController{
 }
 
 // app.ts
-import {Get, RestController, expressHelper, expressHelperEndpoint } from "expressjs-helper";
-
-
 const app: Express = express();
 const port = 8000;
 
-app.use(express.static("public"));
-app.use(express.json());
-
-app.use("/", expressHelper());
+app.use(expressHelper());
 app.use(expressHelperEndpoint());
 
 

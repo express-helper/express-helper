@@ -15,16 +15,17 @@ describe('Http Message Argument resolver Test', () => {
     @RestController()
     class TestController {
       @Get('/cookie')
-      cookie(@Cookie('sessionId') sessionId: string) {
-        return { sessionId };
+      cookie(@Cookie('sessionId') sessionId: string, @Cookie('key') key: string) {
+        return { sessionId, key };
       }
     }
 
     // when
-    const response = await request(app).get('/cookie').set('Cookie', 'sessionId=sessionId');
+    const cookies = ['sessionId=sessionId', 'key=key'];
+    const response = await request(app).get('/cookie').set('Cookie', cookies.join('; '));
 
     // then
     expect(response.status).toEqual(200);
-    expect(response.body).toEqual({ sessionId: 'sessionId' });
+    expect(response.body).toEqual({ sessionId: 'sessionId', key: 'key' });
   });
 });

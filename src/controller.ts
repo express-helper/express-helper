@@ -104,7 +104,7 @@ export const RestController = (): ClassDecorator => {
         const handler = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
           try {
             const returnValue = await metadata.controller.call(prototype, request, response, next);
-            if (returnValue) response.status(statusCode).json(returnValue);
+            if (returnValue !== undefined) response.status(statusCode).json(returnValue);
             else response.status(204).send();
           } catch (e) {
             next(e);

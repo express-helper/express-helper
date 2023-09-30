@@ -484,7 +484,7 @@ export function Head(url: string): MethodDecorator {
  * @example
  * \@RestController
  * class MyController {
- *   \@CONNECT('/connect-endpoint')
+ *   \@Connect('/connect-endpoint')
  *   handleConnect() {
  *     // Implementation of the CONNECT request handler.
  *     // This method will respond to CONNECT requests to "/connect-endpoint".
@@ -495,7 +495,7 @@ export function Head(url: string): MethodDecorator {
  * @returns {MethodDecorator} - A MethodDecorator tailored to denote that the adorned method should
  * handle incoming CONNECT requests for the provided URL path.
  */
-export function CONNECT(url: string): MethodDecorator {
+export function Connect(url: string): MethodDecorator {
   return (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
     const handler = argumentsResolvedHandler(target, propertyKey, descriptor);
 

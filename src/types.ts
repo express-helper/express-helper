@@ -28,7 +28,7 @@ export interface HandlerArgumentMetadata {
   validatePipe: AbstractParsePipe<unknown>;
 }
 
-export interface QueryMetadata extends HandlerArgumentMetadata {
+export interface ParamMetadata extends HandlerArgumentMetadata {
   value: string;
 }
 
@@ -36,4 +36,8 @@ export interface BodyMetadata extends HandlerArgumentMetadata {}
 
 export interface AuthenticationMetadata extends HandlerArgumentMetadata {
   authMiddleware: Handler;
+}
+
+export interface CookieMetadata extends HandlerArgumentMetadata {
+  value: string;
 }

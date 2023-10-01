@@ -1,0 +1,13 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "moduleFileExtensions": ["ts", "js"],
+  "transform": {
+    "^.+\\.(ts)$": ["ts-jest", {
+      "babel": true,
+      "tsconfig": "tsconfig.json"
+    }]
+  },
+  "testMatch": ["<rootDir>/test/**/*.(test|spec).(ts)"],
+  "maxWorkers": 1
+}

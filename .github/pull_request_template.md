@@ -1,11 +1,8 @@
-## 구현 기능
-- 구현한 기능
+## Summary
 
-## 학습한 내용
-- 학습한 내용
+## Describe your changes
 
-## 기타
-- 없는 경우 삭제
+## Additional context
 
 ## Close
 - close #issue

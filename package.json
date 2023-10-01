@@ -1,6 +1,6 @@
 {
   "name": "expressjs-helper",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "express-helper",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
